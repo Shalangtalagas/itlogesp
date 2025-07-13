@@ -1,0 +1,393 @@
+local GUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/BloodLetters/Ash-Libs/refs/heads/main/source.lua"))()
+
+GUI:CreateMain({
+    Name = "Fatal GUI",
+    title = "FatalLoots Randomizer",
+    ToggleUI = "K",
+    WindowIcon = "home",
+    alwaysIconOnly = false,
+    Theme = {
+        Background = Color3.fromRGB(60, 0, 0),
+        Secondary = Color3.fromRGB(90, 0, 0),
+        Accent = Color3.fromRGB(255, 0, 0),
+        AccentSecondary = Color3.fromRGB(200, 0, 0),
+        Text = Color3.fromRGB(255, 255, 255),
+        TextSecondary = Color3.fromRGB(200, 200, 200),
+        Border = Color3.fromRGB(120, 0, 0),
+        NavBackground = Color3.fromRGB(40, 0, 0),
+        Surface = Color3.fromRGB(80, 0, 0),
+        SurfaceVariant = Color3.fromRGB(100, 0, 0),
+        Success = Color3.fromRGB(0, 255, 0),
+        Warning = Color3.fromRGB(255, 200, 0),
+        Error = Color3.fromRGB(255, 50, 50),
+        Shadow = Color3.fromRGB(0, 0, 0)
+    },
+    Blur = { Enable = false, value = 0.2 },
+    Config = { Enabled = true, FileName = "FatalConfig", FolerName = "FatalDir" }
+})
+
+-- State
+local timerValue = 30
+local timerRunning = false
+local autoEnabled = false
+local showTimerEnabled = false
+local timerGui
+local initialized = false
+local timerSettings = {
+    TextColor = Color3.fromRGB(255, 255, 255),
+    BGColor = Color3.fromRGB(0, 0, 0),
+    Width = 160,
+    Height = 40
+}
+
+-- Timer GUI
+local function createTimerGui()
+    if timerGui then timerGui:Destroy() end
+    local sg = Instance.new("ScreenGui", game.CoreGui)
+    sg.Name = "FatalTimer"
+    sg.IgnoreGuiInset = true
+    sg.ResetOnSpawn = false
+
+    local label = Instance.new("TextLabel", sg)
+    label.Name = "Countdown"
+    label.AnchorPoint = Vector2.new(1, 0)
+    label.Position = UDim2.new(1, -20, 0, 20)
+    label.Size = UDim2.new(0, timerSettings.Width, 0, timerSettings.Height)
+    label.BackgroundTransparency = 0.4
+    label.BackgroundColor3 = timerSettings.BGColor
+    label.TextColor3 = timerSettings.TextColor
+    label.TextScaled = true
+    label.Font = Enum.Font.SourceSansBold
+    label.Text = "Time Left: 30s"
+    label.TextWrapped = true
+    label.ClipsDescendants = true
+
+    timerGui = sg
+end
+
+local function updateTimerGui()
+    if timerGui and timerGui:FindFirstChild("Countdown") then
+        local label = timerGui.Countdown
+        label.Text = "Time Left: " .. tostring(timerValue) .. "s"
+        label.BackgroundColor3 = timerSettings.BGColor
+        label.TextColor3 = timerSettings.TextColor
+        label.Size = UDim2.new(0, timerSettings.Width, 0, timerSettings.Height)
+    end
+end
+
+local function removeTimerGui()
+    if timerGui then
+        timerGui:Destroy()
+        timerGui = nil
+    end
+end
+
+local function startCountdown()
+    if timerRunning then return end
+    timerRunning = true
+    while autoEnabled do
+        updateTimerGui()
+        if timerValue <= 0 then
+            if _G.DestroyESP then _G.DestroyESP() end
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/Shalangtalagas/itlogesp/refs/heads/main/beklogs"))()
+            timerValue = 30
+        end
+        task.wait(1)
+        timerValue -= 1
+    end
+    timerRunning = false
+end
+
+-- Randomizer Tab
+local randomizerTab = GUI:CreateTab("Randomizer", "shuffle")
+
+GUI:CreateToggle({
+    parent = randomizerTab,
+    text = "Auto Randomizer",
+    flag = "AutoRandomizer",
+    default = false,
+    callback = function(state)
+        if not initialized then return end
+        if state == autoEnabled then return end
+        autoEnabled = state
+        if state then
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/Shalangtalagas/itlogesp/refs/heads/main/beklogs"))()
+            startCountdown()
+            if showTimerEnabled then
+                createTimerGui()
+                updateTimerGui()
+            end
+        else
+            timerValue = 30
+            removeTimerGui()
+        end
+    end
+})
+
+GUI:CreateToggle({
+    parent = randomizerTab,
+    text = "Show Timer",
+    flag = "ShowTimer",
+    default = false,
+    callback = function(state)
+        if not initialized then return end
+        showTimerEnabled = state
+        if state and autoEnabled then
+            createTimerGui()
+            updateTimerGui()
+        else
+            removeTimerGui()
+        end
+    end
+})
+
+GUI:CreateToggle({
+    parent = randomizerTab,
+    text = "Auto Hatch",
+    flag = "AutoHatch",
+    default = false,
+    callback = function(state)
+        print("Auto Hatch toggle:", state)
+    end
+})
+
+local hatchOptions = {
+    "Raccoon", "Queen Bee", "Dragonfly", "Disco Bee", "Butterfly",
+    "Red Fox", "T-Rex", "Mimic Octopus", "Fennec Fox", "Spinosaurus"
+}
+
+GUI:CreateDropdown({
+    parent = randomizerTab,
+    text = "Hatch 1",
+    options = hatchOptions,
+    default = "Raccoon",
+    flag = "Hatch1Selected",
+    callback = function(selected)
+        print("Hatch 1 selected:", selected)
+    end
+})
+
+GUI:CreateDropdown({
+    parent = randomizerTab,
+    text = "Hatch 2",
+    options = hatchOptions,
+    default = "Raccoon",
+    flag = "Hatch2Selected",
+    callback = function(selected)
+        print("Hatch 2 selected:", selected)
+    end
+})
+
+GUI:CreateDropdown({
+    parent = randomizerTab,
+    text = "Hatch 3",
+    options = hatchOptions,
+    default = "Raccoon",
+    flag = "Hatch3Selected",
+    callback = function(selected)
+        print("Hatch 3 selected:", selected)
+    end
+})
+
+-- Misc Tab
+local miscTab = GUI:CreateTab("Misc", "activity")
+
+-- Player ESP Toggle
+local espConnection
+local espFolder = nil
+
+GUI:CreateToggle({
+    parent = miscTab,
+    text = "Player ESP",
+    flag = "PlayerESP",
+    default = false,
+    callback = function(state)
+        if state then
+            local RunService = game:GetService("RunService")
+            local CoreGui = game:GetService("CoreGui")
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+
+            if CoreGui:FindFirstChild("ESP_Container") then
+                CoreGui:FindFirstChild("ESP_Container"):Destroy()
+            end
+
+            espFolder = Instance.new("Folder")
+            espFolder.Name = "ESP_Container"
+            espFolder.Parent = CoreGui
+
+            local espObjects = {}
+
+            local function createESPPart(part, color)
+                local success, adorn = pcall(function()
+                    local box = Instance.new("BoxHandleAdornment")
+                    box.Size = part.Size + Vector3.new(0.1, 0.1, 0.1)
+                    box.Adornee = part
+                    box.AlwaysOnTop = true
+                    box.ZIndex = 0
+                    box.Transparency = 0.7
+                    box.Color3 = color
+                    box.Parent = espFolder
+                    return box
+                end)
+                return success and adorn or nil
+            end
+
+            espConnection = RunService.RenderStepped:Connect(function()
+                for _, model in ipairs(workspace:GetChildren()) do
+                    local hrp = model:FindFirstChild("HumanoidRootPart")
+                    local humanoid = model:FindFirstChildOfClass("Humanoid")
+                    if hrp and humanoid and model ~= LocalPlayer.Character then
+                        if not espObjects[model] then
+                            espObjects[model] = {}
+                            local adorn = createESPPart(hrp, Color3.fromRGB(0, 255, 0))
+                            if adorn then
+                                table.insert(espObjects[model], adorn)
+                            end
+                        end
+                    end
+                end
+
+                for model, adorns in pairs(espObjects) do
+                    if not model.Parent or not model:FindFirstChild("HumanoidRootPart") then
+                        for _, adorn in ipairs(adorns) do
+                            if adorn and adorn.Parent then
+                                adorn:Destroy()
+                            end
+                        end
+                        espObjects[model] = nil
+                    end
+                end
+            end)
+        else
+            if espConnection then
+                espConnection:Disconnect()
+                espConnection = nil
+            end
+            if espFolder then
+                espFolder:Destroy()
+                espFolder = nil
+            end
+        end
+    end
+})
+
+-- Anti-AFK Toggle
+local afkEnabled = true
+
+_G.SetAFKEnabled = function(state)
+    afkEnabled = state
+end
+
+GUI:CreateToggle({
+    parent = miscTab,
+    text = "Anti AFK",
+    flag = "AntiAFK",
+    default = true,
+    callback = function(state)
+        _G.SetAFKEnabled(state)
+    end
+})
+
+local players = game:GetService("Players")
+local vu = game:GetService("VirtualUser")
+local cam = workspace.CurrentCamera
+local localPlayer = players.LocalPlayer
+
+localPlayer.Idled:Connect(function()
+    if afkEnabled then
+        vu:Button2Down(Vector2.new(0, 0), cam.CFrame)
+        task.wait(1)
+        vu:Button2Up(Vector2.new(0, 0), cam.CFrame)
+    end
+end)
+
+-- Setup Tab
+local setupTab = GUI:CreateTab("Setup", "settings")
+GUI:CreateSection({ parent = setupTab, text = "Edit GUI Theme" })
+
+local function applyThemeColor(property, color)
+    for _, gui in pairs(game:GetService("CoreGui"):GetChildren()) do
+        if gui:IsA("ScreenGui") and gui.Name == "Fatal GUI" then
+            for _, d in pairs(gui:GetDescendants()) do
+                if property == "Text" and (d:IsA("TextLabel") or d:IsA("TextButton")) then
+                    d.TextColor3 = color
+                elseif property == "Background" and d:IsA("Frame") and not d:FindFirstAncestor("ColorPicker") then
+                    d.BackgroundColor3 = color
+                end
+            end
+        end
+    end
+end
+
+GUI:CreateColorPicker({
+    parent = setupTab,
+    text = "Background Color",
+    default = Color3.fromRGB(60, 0, 0),
+    flag = "BackgroundColor",
+    callback = function(color)
+        applyThemeColor("Background", color)
+    end
+})
+
+GUI:CreateColorPicker({
+    parent = setupTab,
+    text = "Text Color",
+    default = Color3.fromRGB(255, 255, 255),
+    flag = "TextColor",
+    callback = function(color)
+        applyThemeColor("Text", color)
+    end
+})
+
+GUI:CreateSection({ parent = setupTab, text = "Edit Timer" })
+
+GUI:CreateColorPicker({
+    parent = setupTab,
+    text = "Timer Text Color",
+    default = timerSettings.TextColor,
+    flag = "TimerTextColor",
+    callback = function(color)
+        timerSettings.TextColor = color
+        updateTimerGui()
+    end
+})
+
+GUI:CreateColorPicker({
+    parent = setupTab,
+    text = "Timer Background Color",
+    default = timerSettings.BGColor,
+    flag = "TimerBGColor",
+    callback = function(color)
+        timerSettings.BGColor = color
+        updateTimerGui()
+    end
+})
+
+GUI:CreateSlider({
+    parent = setupTab,
+    text = "Timer Width",
+    min = 100,
+    max = 300,
+    default = timerSettings.Width,
+    flag = "TimerWidth",
+    callback = function(val)
+        timerSettings.Width = val
+        updateTimerGui()
+    end
+})
+
+GUI:CreateSlider({
+    parent = setupTab,
+    text = "Timer Height",
+    min = 20,
+    max = 80,
+    default = timerSettings.Height,
+    flag = "TimerHeight",
+    callback = function(val)
+        timerSettings.Height = val
+        updateTimerGui()
+    end
+})
+
+initialized = true
