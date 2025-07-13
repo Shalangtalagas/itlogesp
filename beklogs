@@ -15,7 +15,12 @@ local eggChances = {
     ["Common Summer Egg"] = {["Starfish"] = 50, ["Seafull"] = 25, ["Crab"] = 25},
     ["Rare Summer Egg"] = {["Flamingo"] = 30, ["Toucan"] = 25, ["Sea Turtle"] = 20, ["Orangutan"] = 15, ["Seal"] = 10},
     ["Paradise Egg"] = {["Ostrich"] = 43, ["Peacock"] = 33, ["Capybara"] = 24, ["Scarlet Macaw"] = 0, ["Mimic Octopus"] = 0},
-    ["Premium Night Egg"] = {["Hedgehog"] = 50, ["Mole"] = 26, ["Frog"] = 14, ["Echo Frog"] = 10}
+    ["Premium Night Egg"] = {["Hedgehog"] = 50, ["Mole"] = 26, ["Frog"] = 14, ["Echo Frog"] = 10},
+    ["Oasis Egg"] = {["Meerkat"] = 45.5, ["Sand Snake"] = 39.5, ["Axolotl"] = 15, ["Hyacinth Macaw"] = 0, ["Fennec Fox"] = 0},
+    ["Premium Oasis Egg"] = {["Meerkat"] = 40, ["Sand Snake"] = 45, ["Axolotl"] = 15},
+    ["Dinosaur Egg"] = {["Raptor"] = 35.5, ["Triceratops"] = 33.5, ["Stegosaurus"] = 28, ["Pterodactyl"] = 3, ["Brontosaurus"] = 0, ["T-Rex"] = 0},
+    ["Primal Egg"] = {["Parasaurolophus"] = 35.5, ["Iguanodon"] = 33.5, ["Pachycephalosaurus"] = 28, ["Dilophosaurus"] = 3, ["Ankylosaurus"] = 0, ["Spinosaurus"] = 0},
+    ["Premium Primal Egg"] = {["Parasaurolophus"] = 33.5, ["Iguanodon"] = 35.5, ["Pachycephalosaurus"] = 26, ["Dilophosaurus"] = 5, ["Ankylosaurus"] = 0, ["Spinosaurus"] = 0}
 }
 
 local displayedEggs = {}
@@ -82,51 +87,37 @@ local function createEspGui(object, labelText)
     return billboard
 end
 
-local function refreshESP()
-    for _, egg in collectionService:GetTagged("PetEggServer") do
-        if egg:GetAttribute("OWNER") == players.LocalPlayer.Name then
-            local uuid = egg:GetAttribute("OBJECT_UUID")
-            if uuid then
-                if displayedEggs[uuid] then
-                    local gui = displayedEggs[uuid].gui
-                    if gui and gui:FindFirstChild("PetName") then
-                        local pet = getRandomPet(egg:GetAttribute("EggName"))
-                        gui.PetName.Text = egg:GetAttribute("EggName") .. " | " .. (pet or "?")
-                    end
-                else
-                    local pet = getRandomPet(egg:GetAttribute("EggName"))
-                    local gui = createEspGui(egg, egg:GetAttribute("EggName") .. " | " .. (pet or "?"))
-                    displayedEggs[uuid] = {
-                        gui = gui,
-                        egg = egg
-                    }
-                end
-            end
-        end
+local function applyESPToEgg(egg)
+    if egg:GetAttribute("OWNER") ~= localPlayer.Name then return end
+    local uuid = egg:GetAttribute("OBJECT_UUID")
+    if uuid and not displayedEggs[uuid] then
+        local pet = getRandomPet(egg:GetAttribute("EggName"))
+        local gui = createEspGui(egg, egg:GetAttribute("EggName") .. " | " .. (pet or "?"))
+        displayedEggs[uuid] = {
+            gui = gui,
+            egg = egg
+        }
     end
 end
 
-collectionService:GetInstanceRemovedSignal("PetEggServer"):Connect(function(egg)
+local function removeESP(egg)
     local uuid = egg:GetAttribute("OBJECT_UUID")
     if uuid and displayedEggs[uuid] then
         displayedEggs[uuid].gui:Destroy()
         displayedEggs[uuid] = nil
     end
-end)
+end
 
--- Initial scan
-refreshESP()
+-- Apply ESP to existing eggs
+for _, egg in collectionService:GetTagged("PetEggServer") do
+    applyESPToEgg(egg)
+end
 
--- Listen to new eggs
+-- Watch for new eggs
 collectionService:GetInstanceAddedSignal("PetEggServer"):Connect(function(egg)
     task.wait(0.1)
-    refreshESP()
+    applyESPToEgg(egg)
 end)
 
--- Auto-randomizer loop (every 30 seconds)
-coroutine.wrap(function()
-    while true do
-        task.wait(30)
-        refreshESP()
-    end
-end)()
+-- Clean up removed eggs
+collectionService:GetInstanceRemovedSignal("PetEggServer"):Connect(removeESP)
