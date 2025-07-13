@@ -1,3 +1,15 @@
+if _G.DestroyESP then _G.DestroyESP() end
+
+_G.DestroyESP = function()
+    for _, gui in ipairs(game:GetService("CoreGui"):GetChildren()) do
+        if gui:IsA("ScreenGui") and gui.Name == "ESP" then
+            gui:Destroy()
+        end
+    end
+end
+
+-- your ESP setup below...
+
 local players = game:GetService("Players")
 local collectionService = game:GetService("CollectionService")
 local localPlayer = players.LocalPlayer
