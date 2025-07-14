@@ -1,3 +1,5 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/FatalLoots/GrowaGarden/refs/heads/main/EggESPstl", true))()
+
 local GUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/BloodLetters/Ash-Libs/refs/heads/main/source.lua"))()
 
 GUI:CreateMain({
