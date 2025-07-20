@@ -33,7 +33,8 @@ local eggChances = {
     ["Premium Oasis Egg"] = {["Meerkat"] = 40, ["Sand Snake"] = 45, ["Axolotl"] = 15},
     ["Dinosaur Egg"] = {["Raptor"] = 35.5, ["Triceratops"] = 33.5, ["Stegosaurus"] = 28, ["Pterodactyl"] = 3, ["Brontosaurus"] = 0, ["T-Rex"] = 0},
     ["Primal Egg"] = {["Parasaurolophus"] = 35.5, ["Iguanodon"] = 33.5, ["Pachycephalosaurus"] = 28, ["Dilophosaurus"] = 3, ["Ankylosaurus"] = 0, ["Spinosaurus"] = 0},
-    ["Premium Primal Egg"] = {["Parasaurolophus"] = 33.5, ["Iguanodon"] = 35.5, ["Pachycephalosaurus"] = 26, ["Dilophosaurus"] = 5, ["Ankylosaurus"] = 0, ["Spinosaurus"] = 0}
+    ["Premium Primal Egg"] = {["Parasaurolophus"] = 33.5, ["Iguanodon"] = 35.5, ["Pachycephalosaurus"] = 26, ["Dilophosaurus"] = 5, ["Ankylosaurus"] = 0, ["Spinosaurus"] = 0},
+    ["Zen Egg"] = {["Shiba Inu"] = 40.08, ["Nihonzaru"] = 34.5, ["Tanuki"] = 20.82, ["Tanchozuru"] = 4.6, ["Kappa"] = 0, ["Kitsune"] = 0}
 }
 
 local displayedEggs = {}
