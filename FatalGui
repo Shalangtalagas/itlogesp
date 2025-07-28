@@ -156,7 +156,7 @@ GUI:CreateToggle({
 
 local hatchOptions = {
     "Raccoon", "Queen Bee", "Dragonfly", "Disco Bee", "Butterfly",
-    "Red Fox", "T-Rex", "Mimic Octopus", "Fennec Fox", "Spinosaurus"
+    "Red Fox", "T-Rex", "Mimic Octopus", "Fennec Fox", "Spinosaurus, "Kitsune"
 }
 
 GUI:CreateDropdown({
